@@ -1,3 +1,4 @@
+
  <img width="100" height="100" alt="mosaic" src="https://github.com/user-attachments/assets/62d4c4a7-cf8b-4686-abd4-8ad43ebccb29" />
 
 # MOSAIC: MuliOS App Suite
@@ -14,7 +15,7 @@ Built around simplicity, consistency and customization, MOSAIC aims to provide a
 
 A task management application where users can create task lists, organize them into folders, add checkboxes and attach additional notes to stay organized.
 
-
+<img width="100" height="100" alt="Notes100" src="https://github.com/user-attachments/assets/4a4f1f02-50bb-4be0-b024-05f6a2ee888f" />
 
 ### Notes
 
@@ -43,6 +44,9 @@ A document viewer and lightweight editor for quickly opening, reading and making
 ### Meteo
 
 A real-time weather application that uses the current location by default, with the ability to add other locations and monitor their weather conditions.
+
+
+<img width="100" height="100" alt="Clock100" src="https://github.com/user-attachments/assets/f0cfddd4-cc72-486b-9387-f8f9161e3463" />
 
 ### Clock
 
