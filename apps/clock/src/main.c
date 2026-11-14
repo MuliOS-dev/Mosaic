@@ -88,6 +88,7 @@ int main(int argc, char **argv) {
   gtk_container_add(GTK_CONTAINER(box), tmin.btn);
   gtk_container_add(GTK_CONTAINER(box), clock_label);
   gtk_container_add(GTK_CONTAINER(box), TMSTAT);
+  gtk_window_set_title(GTK_WINDOW(window), "Mosaic Clock");
   g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
   g_signal_connect(fmin.btn, "clicked", G_CALLBACK(timer), &fmin);
   g_signal_connect(tmin.btn, "clicked", G_CALLBACK(timer), &fmin);
