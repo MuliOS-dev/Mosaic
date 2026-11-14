@@ -77,6 +77,9 @@ int main(int argc, char **argv) {
   tmin.id = 1;
   GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   GtkWidget *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+  GError *err = NULL;
+  GdkPixbuf *icn = gdk_pixbuf_new_from_file("resources/img/clock.png", &err);
+  gtk_window_set_icon(GTK_WINDOW(window), icn);
   TMSTAT = gtk_label_new("");
   clock_label = gtk_label_new(update());
   g_timeout_add(1000, update_clock, NULL);
