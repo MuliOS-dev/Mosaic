@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mosaic Notes</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;1,6..72,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            serif: ['Newsreader', 'Georgia', 'serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            mosaic: {
+              bg: '#ffffff',
+              surface: '#fafafa',
+              border: 'rgba(15, 23, 42, 0.08)',
+              ink: '#0f172a',
+              muted: '#64748b',
+            }
+          },
+          boxShadow: {
+            'glass': '0 20px 45px -15px rgba(15, 23, 42, 0.07), 0 4px 16px -4px rgba(15, 23, 42, 0.03)',
+            'card': '0 2px 10px -2px rgba(15, 23, 42, 0.04), 0 0 0 1px rgba(15, 23, 42, 0.06)',
+            'card-hover': '0 20px 35px -12px rgba(15, 23, 42, 0.09), 0 0 0 1px rgba(15, 23, 42, 0.12)',
+          }
+        }
+      }
+    }
+  </script>
+  <link data-trunk rel="css" href="style.css" />
+  <link data-trunk rel="rust" data-wasm-opt="z" />
+</head>
+<body class="theme-light antialiased min-h-screen overflow-x-hidden"></body>
+</html>

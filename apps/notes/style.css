@@ -1,0 +1,54 @@
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(15, 23, 42, 0.14); border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(15, 23, 42, 0.26); }
+
+.card-body-scroll::-webkit-scrollbar { width: 4px; }
+.card-body-scroll::-webkit-scrollbar-thumb { background: rgba(15, 23, 42, 0.14); border-radius: 9999px; }
+body.theme-dark .card-body-scroll::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); }
+body.theme-sunshine .card-body-scroll::-webkit-scrollbar-thumb { background: rgba(120, 53, 15, 0.22); }
+
+.note-font-sans { font-family: 'Inter', sans-serif; }
+.note-font-serif { font-family: 'Newsreader', serif; }
+.note-font-mono { font-family: 'JetBrains Mono', monospace; }
+
+/* LIGHT */
+body.theme-light { background-color: #ffffff; color: #0f172a; }
+body.theme-light #appShell { background-color: #ffffff; }
+body.theme-light #sidebarBackdropLayer { background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 50%, #f8fafc 100%); }
+body.theme-light #sidebarGlassSurface {
+  border-color: rgba(15, 23, 42, 0.08);
+  box-shadow: 12px 0 36px -14px rgba(15, 23, 42, 0.07), inset -1px 0 0 rgba(255, 255, 255, 0.92), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+body.theme-light .sidebar-glass-subtle { -webkit-backdrop-filter: blur(16px) saturate(130%); backdrop-filter: blur(16px) saturate(130%); background: rgba(255, 255, 255, 0.84); }
+body.theme-light .sidebar-glass-frosted { -webkit-backdrop-filter: blur(28px) saturate(140%); backdrop-filter: blur(28px) saturate(140%); background: linear-gradient(165deg, rgba(255,255,255,0.76) 0%, rgba(248,250,252,0.68) 55%, rgba(255,255,255,0.74) 100%); }
+body.theme-light .sidebar-glass-heavy { -webkit-backdrop-filter: blur(44px) saturate(160%); backdrop-filter: blur(44px) saturate(160%); background: linear-gradient(165deg, rgba(255,255,255,0.64) 0%, rgba(241,245,249,0.56) 55%, rgba(255,255,255,0.62) 100%); }
+
+/* DARK */
+body.theme-dark { background-color: #0e1015; color: #f8fafc; }
+body.theme-dark #appShell { background-color: #0e1015; }
+body.theme-dark #sidebarBackdropLayer { background: linear-gradient(180deg, #161922 0%, #11131a 50%, #171a24 100%); }
+body.theme-dark #sidebarGlassSurface {
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 14px 0 40px -12px rgba(0, 0, 0, 0.55), inset -1px 0 0 rgba(255, 255, 255, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+body.theme-dark .sidebar-glass-subtle { -webkit-backdrop-filter: blur(16px) saturate(140%); backdrop-filter: blur(16px) saturate(140%); background: rgba(22, 25, 34, 0.86); }
+body.theme-dark .sidebar-glass-frosted { -webkit-backdrop-filter: blur(28px) saturate(160%); backdrop-filter: blur(28px) saturate(160%); background: linear-gradient(165deg, rgba(28,32,44,0.74) 0%, rgba(20,23,32,0.66) 55%, rgba(26,30,40,0.72) 100%); }
+body.theme-dark .sidebar-glass-heavy { -webkit-backdrop-filter: blur(44px) saturate(180%); backdrop-filter: blur(44px) saturate(180%); background: linear-gradient(165deg, rgba(34,39,53,0.62) 0%, rgba(22,25,34,0.54) 55%, rgba(30,34,46,0.60) 100%); }
+
+/* SUNSHINE */
+body.theme-sunshine { background-color: #FA9E2E; color: #422006; }
+body.theme-sunshine #appShell { background-color: transparent; }
+body.theme-sunshine #sidebarBackdropLayer { background: rgba(255, 248, 220, 0.18); }
+body.theme-sunshine #sidebarGlassSurface {
+  border-color: rgba(255, 255, 255, 0.58);
+  box-shadow: 14px 0 38px -12px rgba(146, 64, 14, 0.22), inset -1px 0 0 rgba(255, 255, 255, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+body.theme-sunshine .sidebar-glass-subtle { -webkit-backdrop-filter: blur(16px) saturate(150%); backdrop-filter: blur(16px) saturate(150%); background: rgba(255, 251, 235, 0.80); }
+body.theme-sunshine .sidebar-glass-frosted { -webkit-backdrop-filter: blur(28px) saturate(165%); backdrop-filter: blur(28px) saturate(165%); background: linear-gradient(165deg, rgba(255,251,235,0.68) 0%, rgba(254,243,199,0.56) 55%, rgba(255,251,235,0.65) 100%); }
+body.theme-sunshine .sidebar-glass-heavy { -webkit-backdrop-filter: blur(44px) saturate(185%); backdrop-filter: blur(44px) saturate(185%); background: linear-gradient(165deg, rgba(255,251,235,0.52) 0%, rgba(254,243,199,0.42) 55%, rgba(255,251,235,0.50) 100%); }
+
+.note-scroll-mask {
+  -webkit-mask-image: linear-gradient(to bottom, #000 84%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 84%, transparent 100%);
+}
