@@ -1,5 +1,6 @@
 
- <img width="100" height="100" alt="mosaic" src="https://github.com/user-attachments/assets/62d4c4a7-cf8b-4686-abd4-8ad43ebccb29" />
+<img width="150" height="150" alt="Mosaic" src="https://github.com/user-attachments/assets/b104b23e-64ef-4fce-8d99-f2c797ee6efa" />
+
 
 # MOSAIC: MuliOS App Suite
 
@@ -9,28 +10,26 @@ Built around simplicity, consistency and customization, MOSAIC aims to provide a
 
 ## Applications
 
-<img width="100" height="100" alt="Tasks100" src="https://github.com/user-attachments/assets/e3d92800-0f97-490c-bf5f-8d5552b31ce5" />
+<img width="100" height="100" alt="Tasks" src="https://github.com/user-attachments/assets/3d6b04b7-6b54-446b-8b50-d9ab48afe5ae" />
 
 ### Tasks
 
 A task management application where users can create task lists, organize them into folders, add checkboxes and attach additional notes to stay organized.
 
-<img width="100" height="100" alt="Notes100" src="https://github.com/user-attachments/assets/4a4f1f02-50bb-4be0-b024-05f6a2ee888f" />
+<img width="100" height="100" alt="Notes" src="https://github.com/user-attachments/assets/feaad9ae-9a90-4c1f-87ce-ef6db6c5f0a0" />
 
 ### Notes
 
 A note-taking application supporting folders and Markdown formatting, allowing users to organize, write and manage their notes efficiently.
 
-
-<img width="100" height="100" alt="Agenda100" src="https://github.com/user-attachments/assets/c246818a-a9db-439d-9856-4f2ab4b43f85" />
-
+<img width="100" height="100" alt="Agenda" src="https://github.com/user-attachments/assets/f90a04eb-f0d7-4da0-a44c-4c743b561d9f" />
 
 ### Agenda
 
 A calendar application inspired by Google Calendar, designed to manage events, appointments and schedules in a clear interface.
 
 
-<img width="100" height="100" alt="Docs" src="https://github.com/user-attachments/assets/eed78e75-11fb-4ef4-a3ae-0c8939585554" />
+<img width="100" height="100" alt="Docs" src="https://github.com/user-attachments/assets/c729702b-ad61-4702-a047-759eb1dc03b8" />
 
 
 ### Docs
@@ -38,7 +37,7 @@ A calendar application inspired by Google Calendar, designed to manage events, a
 A document viewer and lightweight editor for quickly opening, reading and making changes to documents.
 
 
-<img width="100" height="100" alt="Meteo200" src="https://github.com/user-attachments/assets/8dc48158-81bb-487e-8f91-506d8efa3254" />
+<img width="150" height="100" alt="Meteo" src="https://github.com/user-attachments/assets/b419e86c-4558-414b-a49d-bfbb8f80349f" />
 
 
 ### Meteo
@@ -46,7 +45,7 @@ A document viewer and lightweight editor for quickly opening, reading and making
 A real-time weather application that uses the current location by default, with the ability to add other locations and monitor their weather conditions.
 
 
-<img width="100" height="100" alt="Clock100" src="https://github.com/user-attachments/assets/f0cfddd4-cc72-486b-9387-f8f9161e3463" />
+<img width="100" height="100" alt="Clock (6)" src="https://github.com/user-attachments/assets/5b861ff8-b1c9-4ff3-9dcf-c309ec2d6a4b" />
 
 ### Clock
 
