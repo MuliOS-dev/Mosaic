@@ -1,5 +1,6 @@
 
-<img width="150" height="150" alt="Mosaic" src="https://github.com/user-attachments/assets/b104b23e-64ef-4fce-8d99-f2c797ee6efa" />
+<img width="150" height="150" alt="MosaicV2" src="https://github.com/user-attachments/assets/d40ec59e-5ea6-4c87-907d-5ffc98bbeabe" />
+
 
 
 # MOSAIC: MuliOS App Suite
