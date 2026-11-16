@@ -1,0 +1,399 @@
+/* ==========================================================================
+   Mosaic Sunshine  -  GTK3 overlay stylesheet
+   Sunshine - tangerine window, lemon sidebar, buttercream chrome
+
+   Install (user-wide, affects every GTK3 app):
+     cp gtk.css ~/.config/gtk-3.0/gtk.css
+   Layered on top of the stock Adwaita theme, so anything not restyled
+   here keeps working normally. Safe to remove: just delete that file.
+   ========================================================================== */
+
+/* --- GTK3 / classic named colors ------------------------------- */
+@define-color theme_bg_color #FA9E2E;
+@define-color theme_fg_color #422006;
+@define-color theme_base_color #FFFDF5;
+@define-color theme_text_color #422006;
+@define-color theme_selected_bg_color #FDE68A;
+@define-color theme_selected_fg_color #422006;
+@define-color theme_unfocused_bg_color #FA9E2E;
+@define-color theme_unfocused_fg_color #422006;
+@define-color theme_unfocused_base_color #FFFDF5;
+@define-color theme_unfocused_text_color #422006;
+@define-color theme_unfocused_selected_bg_color #FDE68A;
+@define-color theme_unfocused_selected_fg_color #422006;
+@define-color theme_tooltip_bg_color #422006;
+@define-color theme_tooltip_fg_color #FFFBEB;
+@define-color insensitive_bg_color rgba(255, 255, 255, 0.65);
+@define-color insensitive_fg_color rgba(66, 32, 6, 0.45);
+@define-color insensitive_base_color #FFFDF5;
+@define-color borders rgba(66, 32, 6, 0.14);
+@define-color unfocused_borders rgba(66, 32, 6, 0.14);
+@define-color warning_color #92400e;
+@define-color error_color #991b1b;
+@define-color success_color #166534;
+@define-color link_color #9a3412;
+@define-color link_visited_color #7c2d12;
+@define-color content_view_bg #FFFDF5;
+
+/* --- libadwaita / GTK4 named colors ---------------------------- */
+@define-color window_bg_color #FA9E2E;
+@define-color window_fg_color #422006;
+@define-color view_bg_color #FFFDF5;
+@define-color view_fg_color #422006;
+@define-color headerbar_bg_color #FCE467;
+@define-color headerbar_fg_color #422006;
+@define-color headerbar_border_color rgba(66, 32, 6, 0.14);
+@define-color headerbar_backdrop_color @headerbar_bg_color;
+@define-color headerbar_shade_color rgba(146, 64, 14, 0.18);
+@define-color card_bg_color rgba(255, 255, 255, 0.78);
+@define-color card_fg_color #422006;
+@define-color card_shade_color rgba(146, 64, 14, 0.18);
+@define-color dialog_bg_color #FFFDF5;
+@define-color dialog_fg_color #422006;
+@define-color popover_bg_color #FFFDF5;
+@define-color popover_fg_color #422006;
+@define-color popover_shade_color rgba(146, 64, 14, 0.18);
+@define-color sidebar_bg_color #F8D930;
+@define-color sidebar_fg_color #422006;
+@define-color sidebar_backdrop_color #F2CE1E;
+@define-color sidebar_border_color rgba(66, 32, 6, 0.14);
+@define-color sidebar_shade_color rgba(146, 64, 14, 0.18);
+@define-color secondary_sidebar_bg_color #F8D930;
+@define-color secondary_sidebar_fg_color #422006;
+@define-color accent_bg_color #78350f;
+@define-color accent_fg_color #FFFBEB;
+@define-color accent_color #78350f;
+@define-color destructive_bg_color #b91c1c;
+@define-color destructive_fg_color #ffffff;
+@define-color destructive_color #991b1b;
+@define-color success_bg_color #15803d;
+@define-color success_fg_color #ffffff;
+@define-color warning_bg_color #92400e;
+@define-color warning_fg_color #FFFBEB;
+@define-color error_bg_color #b91c1c;
+@define-color error_fg_color #ffffff;
+@define-color shade_color rgba(146, 64, 14, 0.18);
+
+/* --- Mosaic helpers (used by the rules below) ------------------ */
+@define-color mosaic_control rgba(255, 255, 255, 0.65);
+@define-color mosaic_control_hover rgba(255, 255, 255, 0.80);
+@define-color mosaic_control_active rgba(255, 255, 255, 0.95);
+@define-color mosaic_control_border rgba(255, 255, 255, 0.70);
+@define-color mosaic_border rgba(66, 32, 6, 0.14);
+@define-color mosaic_muted #6b3a12;
+@define-color mosaic_row_hover rgba(255, 255, 255, 0.40);
+@define-color mosaic_row_active rgba(255, 255, 255, 0.65);
+@define-color mosaic_ink_bg #422006;
+@define-color mosaic_ink_fg #FFFBEB;
+@define-color mosaic_ink_hover #5a2d0a;
+@define-color mosaic_scroll rgba(120, 53, 15, 0.28);
+@define-color mosaic_scroll_hover rgba(120, 53, 15, 0.45);
+@define-color mosaic_shadow rgba(146, 64, 14, 0.25);
+
+/* ========================================================================
+   BASE SURFACES
+   ======================================================================== */
+window, .background {
+  background-color: @window_bg_color;
+  color: @window_fg_color;
+}
+
+headerbar, .titlebar {
+  background-color: @headerbar_bg_color;
+  background-image: none;
+  color: @headerbar_fg_color;
+  border-bottom: 1px solid @mosaic_border;
+  box-shadow: none;
+}
+
+separator { background-color: @mosaic_border; }
+
+tooltip.background {
+  background-color: @theme_tooltip_bg_color;
+  color: @theme_tooltip_fg_color;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px -6px @mosaic_shadow;
+}
+tooltip.background label { color: @theme_tooltip_fg_color; }
+
+/* ========================================================================
+   BUTTONS
+   ======================================================================== */
+button {
+  background-image: none;
+  background-color: @mosaic_control;
+  color: @window_fg_color;
+  border: 1px solid @mosaic_control_border;
+  border-radius: 14px;
+  box-shadow: none;
+  text-shadow: none;
+  padding: 5px 12px;
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+button:hover   { background-color: @mosaic_control_hover; }
+button:active,
+button:checked { background-color: @mosaic_control_active; }
+button:disabled {
+  color: @insensitive_fg_color;
+  background-color: @mosaic_control;
+}
+
+button.flat,
+headerbar button.flat {
+  background-color: transparent;
+  border-color: transparent;
+}
+button.flat:hover   { background-color: @mosaic_row_hover; }
+button.flat:active,
+button.flat:checked { background-color: @mosaic_row_active; }
+
+/* Primary action = solid "ink" button, like Save Preferences in the concept */
+button.suggested-action {
+  background-color: @mosaic_ink_bg;
+  color: @mosaic_ink_fg;
+  border-color: transparent;
+}
+button.suggested-action:hover { background-color: @mosaic_ink_hover; }
+button.suggested-action:disabled { opacity: 0.5; }
+
+button.destructive-action {
+  background-color: @destructive_bg_color;
+  color: @destructive_fg_color;
+  border-color: transparent;
+}
+button.destructive-action:hover { background-color: shade(@destructive_bg_color, 1.08); }
+
+button.circular,
+button.pill { border-radius: 99px; }
+
+/* ========================================================================
+   TEXT ENTRY
+   ======================================================================== */
+entry, spinbutton {
+  background-color: @mosaic_control;
+  background-image: none;
+  color: @view_fg_color;
+  border: 1px solid @mosaic_control_border;
+  border-radius: 14px;
+  box-shadow: none;
+  padding: 5px 10px;
+  transition: background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
+}
+entry:hover, spinbutton:hover { background-color: @mosaic_control_hover; }
+entry:disabled, spinbutton:disabled { color: @insensitive_fg_color; }
+entry placeholder, entry text placeholder { color: @mosaic_muted; }
+
+textview, textview text, .view {
+  background-color: @view_bg_color;
+  color: @view_fg_color;
+}
+
+/* ========================================================================
+   LISTS, ROWS, SIDEBARS
+   ======================================================================== */
+list, listview, treeview.view, iconview {
+  background-color: transparent;
+  color: inherit;
+}
+row {
+  border-radius: 14px;
+  transition: background-color 150ms ease;
+}
+row:hover    { background-color: @mosaic_row_hover; }
+row:selected,
+row:selected:hover {
+  background-color: @mosaic_row_active;
+  color: @window_fg_color;
+  font-weight: 600;
+}
+
+.sidebar, placessidebar, stacksidebar, .sidebar-pane {
+  background-color: @sidebar_bg_color;
+  color: @sidebar_fg_color;
+}
+.sidebar { border-right: 1px solid @mosaic_border; }
+.navigation-sidebar { background-color: transparent; }
+.navigation-sidebar row,
+placessidebar row,
+stacksidebar row { margin: 2px 6px; }
+
+/* "Recent" style section labels */
+.heading, .caption-heading {
+  color: @mosaic_muted;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.dim-label { color: @mosaic_muted; }
+
+/* ========================================================================
+   SCROLLBARS - slim 6px pills (like the concept's custom scrollbars)
+   ======================================================================== */
+scrollbar { background: transparent; border: none; }
+scrollbar trough { background: transparent; border: none; }
+scrollbar slider {
+  background-color: @mosaic_scroll;
+  background-clip: padding-box;
+  border: 2px solid transparent;
+  border-radius: 99px;
+  min-width: 6px;
+  min-height: 6px;
+  transition: background-color 150ms ease;
+}
+scrollbar slider:hover,
+scrollbar slider:active { background-color: @mosaic_scroll_hover; }
+
+/* ========================================================================
+   SWITCH, CHECK, RADIO, SCALE, PROGRESS
+   ======================================================================== */
+switch {
+  background-color: @mosaic_control_active;
+  background-image: none;
+  border: 1px solid @mosaic_control_border;
+  border-radius: 99px;
+  box-shadow: none;
+  color: transparent;
+}
+switch:checked {
+  background-color: @accent_bg_color;
+  border-color: transparent;
+}
+switch slider {
+  background-color: @card_bg_color;
+  background-image: none;
+  border: none;
+  border-radius: 99px;
+  box-shadow: 0 1px 3px @mosaic_shadow;
+}
+
+check, radio {
+  background-color: @mosaic_control;
+  background-image: none;
+  border: 1px solid @mosaic_control_border;
+  box-shadow: none;
+  color: @accent_fg_color;
+}
+check { border-radius: 7px; }
+radio { border-radius: 99px; }
+check:hover, radio:hover { background-color: @mosaic_control_hover; }
+check:checked, check:indeterminate,
+radio:checked, radio:indeterminate {
+  background-color: @accent_bg_color;
+  border-color: @accent_bg_color;
+  color: @accent_fg_color;
+}
+
+scale trough {
+  background-color: @mosaic_control_active;
+  background-image: none;
+  border: none;
+  border-radius: 99px;
+}
+scale highlight, scale fill {
+  background-color: @accent_bg_color;
+  background-image: none;
+  border: none;
+  border-radius: 99px;
+}
+scale slider {
+  background-color: @card_bg_color;
+  background-image: none;
+  border: 1px solid @mosaic_control_border;
+  border-radius: 99px;
+  box-shadow: 0 1px 3px @mosaic_shadow;
+}
+
+progressbar trough {
+  background-color: @mosaic_control_active;
+  border: none;
+  border-radius: 99px;
+  min-height: 6px;
+}
+progressbar progress {
+  background-color: @accent_bg_color;
+  background-image: none;
+  border: none;
+  border-radius: 99px;
+}
+
+/* ========================================================================
+   TABS, CARDS, LINKS
+   ======================================================================== */
+notebook > header {
+  background-color: @headerbar_bg_color;
+  box-shadow: none;
+  border-color: @mosaic_border;
+}
+notebook > header > tabs > tab {
+  background-color: transparent;
+  color: @mosaic_muted;
+  border-radius: 12px 12px 0 0;
+  transition: background-color 150ms ease;
+}
+notebook > header > tabs > tab:hover   { background-color: @mosaic_row_hover; color: @window_fg_color; }
+notebook > header > tabs > tab:checked { color: @window_fg_color; box-shadow: inset 0 -2px @accent_bg_color; }
+
+/* Rounded "note square" card (24px radius from the concept) */
+.card, frame.card {
+  background-color: @card_bg_color;
+  color: @card_fg_color;
+  border: 1px solid @mosaic_border;
+  border-radius: 24px;
+  box-shadow: 0 2px 10px -2px @mosaic_shadow;
+}
+.card:hover { box-shadow: 0 20px 35px -12px @mosaic_shadow; }
+
+link, *:link { color: @link_color; }
+*:visited    { color: @link_visited_color; }
+
+
+/* ========================================================================
+   GTK3 SPECIFICS
+   ======================================================================== */
+entry:focus, spinbutton:focus {
+  background-color: @view_bg_color;
+  border-color: alpha(@accent_bg_color, 0.65);
+  box-shadow: 0 0 0 4px alpha(@accent_bg_color, 0.14);
+}
+
+*:selected, selection, .view:selected, textview text selection {
+  background-color: @theme_selected_bg_color;
+  color: @theme_selected_fg_color;
+}
+treeview.view:selected, iconview:selected {
+  background-color: @theme_selected_bg_color;
+  color: @theme_selected_fg_color;
+  border-radius: 8px;
+}
+#clock_label {
+  font-family: "JetBrainsMono Nerd Font Mono";
+  font-size: 48px;
+}
+
+#round-clock {
+  border-radius: 999px;
+  background-color: @popover_fg_color;
+  color: white;
+  font-size: 28px;
+  font-weight: bold;
+  padding: 0;
+}
+
+popover, popover.background {
+  background-color: @popover_bg_color;
+  color: @popover_fg_color;
+  border: 1px solid @mosaic_border;
+  border-radius: 20px;
+  box-shadow: 0 20px 45px -15px @mosaic_shadow, 0 4px 16px -4px @mosaic_shadow;
+}
+menu, .menu, .context-menu, .popup {
+  background-color: @popover_bg_color;
+  color: @popover_fg_color;
+  border: 1px solid @mosaic_border;
+  border-radius: 14px;
+  padding: 4px;
+}
+menuitem, modelbutton { border-radius: 10px; }
+menuitem:hover, modelbutton:hover { background-color: @mosaic_row_hover; color: @popover_fg_color; }
+menuitem:disabled { color: @insensitive_fg_color; }
+
+.dialog-vbox, messagedialog { background-color: @dialog_bg_color; }
