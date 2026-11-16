@@ -1,10 +1,15 @@
+#include "gtk/gtkcssprovider.h"
 #include <libnotify/notification.h>
+#include <stddef.h>
+#include <stdio.h>
+#include <wchar.h>
 #define MINIAUDIO_IMPLEMENTATION
 #include <glib-object.h>
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <libnotify/notify.h>
 #include <miniaudio/miniaudio.h>
+#include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
 
@@ -13,6 +18,16 @@ ma_engine ENGINE;
 ma_sound SOUND;
 GtkWidget *clock_label;
 int sintd = 0;
+int DEF_THEME;
+int THEME;
+char *T1 = "src/styles/sunshine.css";
+char *T2 = "src/styles/dark.css";
+char *T3 = "src/styles/light.css";
+GtkCssProvider *CSS;
+GtkWidget *timeinput;
+GtkWidget *sunshinetb;
+GtkWidget *darktb;
+GtkWidget *lightb;
 
 typedef struct {
   GtkWidget *btn;
@@ -42,10 +57,17 @@ gboolean tdn(gpointer label) {
   return G_SOURCE_REMOVE;
 }
 
+void starttimer(GtkButton *button, gpointer data) {
+  g_timeout_add_seconds(atoi(gtk_entry_get_text(GTK_ENTRY(timeinput))) * 60,
+                        tdn, TMSTAT);
+}
+
 gchar *update() {
   time_t now = time(NULL);
-  gchar *timeval = ctime(&now);
-  return timeval;
+  struct tm *t = localtime(&now);
+  gchar buffer[50];
+  strftime(buffer, sizeof(buffer), "%T", t);
+  return g_strdup(buffer);
 }
 
 gboolean update_clock(gpointer data) {
@@ -61,40 +83,261 @@ void timer(GtkButton *button, gpointer data) {
     break;
   case 1:
     g_timeout_add_seconds(10 * 60, tdn, TMSTAT);
+    break;
+  case 2:
+    g_timeout_add_seconds(15 * 60, tdn, TMSTAT);
+    break;
+  case 3:
+    g_timeout_add_seconds(30 * 60, tdn, TMSTAT);
+  case 4:
+    g_timeout_add_seconds(60 * 60, tdn, TMSTAT);
   }
+}
+
+int show(char *css) {
+  gtk_css_provider_load_from_data(CSS, css, -1, NULL);
+
+  gtk_style_context_add_provider_for_screen(
+      gdk_screen_get_default(), GTK_STYLE_PROVIDER(CSS),
+      GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+  return 0;
+}
+
+int load_theme(int theme) {
+  printf("got called with %i\n", theme);
+  switch (theme) {
+  case 0: {
+    FILE *cssf = fopen(T1, "r");
+    if (cssf == NULL) {
+      perror("Theme file not found, falling back to gtk theme.");
+      return 1;
+    }
+    fseek(cssf, 0, SEEK_END);
+    long size = ftell(cssf);
+    rewind(cssf);
+    char cssfb[size + 1];
+    size_t n = fread(cssfb, 1, size, cssf);
+    cssfb[n] = '\0';
+    show(cssfb);
+    fclose(cssf);
+    printf("%s\n", cssfb);
+    break;
+  }
+  case 1: {
+    FILE *cssf = fopen(T2, "r");
+    if (cssf == NULL) {
+      perror("Theme file not found, falling back to gtk theme.");
+      return 1;
+    }
+    fseek(cssf, 0, SEEK_END);
+    long size = ftell(cssf);
+    rewind(cssf);
+    char cssfb[size + 1];
+    size_t n = fread(cssfb, 1, size, cssf);
+    cssfb[n] = '\0';
+    show(cssfb);
+    printf("%s\n", cssfb);
+    break;
+  }
+  case 2: {
+    FILE *cssf = fopen(T3, "r");
+    if (cssf == NULL) {
+      perror("Theme file not found, falling back to gtk theme.");
+      return 1;
+    }
+    fseek(cssf, 0, SEEK_END);
+    long size = ftell(cssf);
+    rewind(cssf);
+    char cssfb[size + 1];
+    size_t n = fread(cssfb, 1, size, cssf);
+    cssfb[n] = '\0';
+    show(cssfb);
+    printf("%s\n", cssfb);
+    break;
+  }
+  }
+  return 0;
+}
+
+void settheme(GtkButton *button, gpointer data) {
+  FILE *themef = fopen("include/deftheme", "w");
+  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(sunshinetb)) == TRUE) {
+    fprintf(themef, "0");
+    load_theme(0);
+  } else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(darktb)) == TRUE) {
+    fprintf(themef, "1");
+    load_theme(1);
+  } else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(lightb)) == TRUE) {
+    fprintf(themef, "2");
+    load_theme(2);
+  }
+  fclose(themef);
 }
 
 int main(int argc, char **argv) {
 
   // init
+  FILE *themefile = fopen("include/deftheme", "r+");
+  CSS = gtk_css_provider_new();
+  if (themefile == NULL) {
+    perror("failed to load default theme, falling back.");
+    THEME = 0;
+  }
+  char tbuf[3];
+  size_t n = fread(tbuf, 1, sizeof(tbuf) - 1, themefile);
+  tbuf[n] = '\0';
+  DEF_THEME = atoi(tbuf);
+  switch (DEF_THEME) {
+  case 0:
+    THEME = DEF_THEME;
+    break;
+  case 1:
+    THEME = DEF_THEME;
+    break;
+  case 2:
+    THEME = DEF_THEME;
+    break;
+  }
   notify_init("Clock");
   gtk_init(&argc, &argv);
+  load_theme(THEME);
   Mosaic_BTN fmin;
   fmin.btn = gtk_button_new_with_label("5mins");
   fmin.id = 0;
   Mosaic_BTN tmin;
   tmin.btn = gtk_button_new_with_label("10mins");
   tmin.id = 1;
+  Mosaic_BTN fiftm;
+  fiftm.btn = gtk_button_new_with_label("15mins");
+  fiftm.id = 2;
+  Mosaic_BTN thmin;
+  thmin.btn = gtk_button_new_with_label("30mins");
+  thmin.id = 3;
+  Mosaic_BTN hour;
+  hour.btn = gtk_button_new_with_label("1h");
+  hour.id = 4;
+  timeinput = gtk_entry_new();
+  GtkWidget *themesetter = gtk_button_new_with_label("Set as default theme");
+  sunshinetb = gtk_radio_button_new_with_label(NULL, "Sunshine");
+  darktb = gtk_radio_button_new_with_label_from_widget(
+      GTK_RADIO_BUTTON(sunshinetb), "Dark");
+  lightb = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(darktb),
+                                                       "Light");
   GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   GtkWidget *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+  GtkWidget *startbtn = gtk_button_new_with_label("Start");
   GError *err = NULL;
   GdkPixbuf *icn = gdk_pixbuf_new_from_file("resources/img/clock.png", &err);
+  GtkWidget *row = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+  GtkWidget *separator = gtk_separator_new(GTK_ORIENTATION_VERTICAL);
+  gtk_box_pack_start(GTK_BOX(row), fmin.btn, FALSE, FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(row), tmin.btn, FALSE, FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(row), thmin.btn, FALSE, FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(row), hour.btn, FALSE, FALSE, 0);
+  gtk_entry_set_placeholder_text(GTK_ENTRY(timeinput), "Minutes e.g 25");
+  gtk_widget_set_halign(row, GTK_ALIGN_END);
   gtk_window_set_icon(GTK_WINDOW(window), icn);
   TMSTAT = gtk_label_new("");
+  GtkWidget *settings = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
   clock_label = gtk_label_new(update());
+  gtk_widget_set_name(GTK_WIDGET(window), "mainwin");
+  gtk_widget_set_name(clock_label, "round-clock");
+  GtkWidget *radios = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+  gtk_container_add(GTK_CONTAINER(radios), sunshinetb);
+  gtk_container_add(GTK_CONTAINER(radios), darktb);
+  gtk_container_add(GTK_CONTAINER(radios), lightb);
+  gtk_widget_set_valign(radios, GTK_ALIGN_CENTER);
+  GtkWidget *startrow = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+  gtk_box_pack_start(GTK_BOX(settings), radios, FALSE, FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(settings), themesetter, FALSE, FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(startrow), startbtn, FALSE, FALSE, 0);
+  gtk_widget_set_halign(startrow, GTK_ALIGN_END);
+  gtk_widget_set_vexpand(box, TRUE);
+  gtk_widget_set_valign(box, GTK_ALIGN_FILL);
   g_timeout_add(1000, update_clock, NULL);
-  gtk_container_add(GTK_CONTAINER(window), box);
-  gtk_container_add(GTK_CONTAINER(box), fmin.btn);
-  gtk_container_add(GTK_CONTAINER(box), tmin.btn);
-  gtk_container_add(GTK_CONTAINER(box), clock_label);
-  gtk_container_add(GTK_CONTAINER(box), TMSTAT);
+  GtkWidget *main_row = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+  gtk_widget_set_size_request(settings, 220, -1);
+  gtk_widget_set_margin_start(settings, 20);
+  gtk_widget_set_margin_end(settings, 20);
+  gtk_widget_set_margin_top(settings, 20);
+  gtk_box_pack_start(GTK_BOX(main_row), settings, FALSE, FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(main_row), separator, FALSE, FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(main_row), box, TRUE, TRUE, 0);
+  gtk_container_add(GTK_CONTAINER(window), main_row);
+  gtk_widget_set_halign(clock_label, GTK_ALIGN_CENTER);
+  gtk_widget_set_valign(clock_label, GTK_ALIGN_CENTER);
+  gtk_box_pack_end(GTK_BOX(box), row, FALSE, FALSE, 0);
+  gtk_box_pack_end(GTK_BOX(box), startrow, FALSE, FALSE, 0);
+  gtk_box_pack_end(GTK_BOX(box), timeinput, FALSE, FALSE, 0);
   gtk_window_set_title(GTK_WINDOW(window), "Mosaic Clock");
+  gtk_widget_set_halign(fmin.btn, GTK_ALIGN_END);
+  gtk_widget_set_valign(fmin.btn, GTK_ALIGN_START);
+  gtk_widget_set_halign(fiftm.btn, GTK_ALIGN_END);
+  gtk_widget_set_valign(fiftm.btn, GTK_ALIGN_START);
+  gtk_widget_set_halign(tmin.btn, GTK_ALIGN_END);
+  gtk_widget_set_valign(tmin.btn, GTK_ALIGN_START);
+  gtk_widget_set_halign(thmin.btn, GTK_ALIGN_END);
+  gtk_widget_set_valign(thmin.btn, GTK_ALIGN_START);
+  gtk_widget_set_halign(hour.btn, GTK_ALIGN_END);
+  gtk_widget_set_valign(hour.btn, GTK_ALIGN_START);
+  gtk_widget_set_valign(startbtn, GTK_ALIGN_START);
+  gtk_widget_set_halign(startbtn, GTK_ALIGN_END);
+  gtk_widget_set_halign(sunshinetb, GTK_ALIGN_START);
+  gtk_widget_set_valign(sunshinetb, GTK_ALIGN_START);
+  gtk_widget_set_halign(darktb, GTK_ALIGN_START);
+  gtk_widget_set_valign(darktb, GTK_ALIGN_START);
+  gtk_widget_set_halign(lightb, GTK_ALIGN_START);
+  gtk_widget_set_valign(lightb, GTK_ALIGN_START);
+  gtk_widget_set_halign(timeinput, GTK_ALIGN_END);
+  gtk_widget_set_halign(themesetter, GTK_ALIGN_END);
+  gtk_widget_set_valign(themesetter, GTK_ALIGN_START);
+  gtk_widget_set_halign(radios, GTK_ALIGN_START);
+  gtk_widget_set_valign(radios, GTK_ALIGN_START);
+  gtk_widget_set_size_request(timeinput, 240, -1);
+  gtk_widget_set_size_request(sunshinetb, 100, 20);
+  gtk_widget_set_size_request(darktb, 100, 20);
+  gtk_widget_set_size_request(lightb, 100, 20);
+  gtk_widget_set_size_request(fmin.btn, 240, 80);
+  gtk_widget_set_size_request(startbtn, 240, 80);
+  gtk_widget_set_size_request(tmin.btn, 240, 80);
+  gtk_widget_set_size_request(thmin.btn, 240, 80);
+  gtk_widget_set_size_request(hour.btn, 240, 80);
+  gtk_widget_set_size_request(themesetter, 240, 80);
+  gtk_widget_set_size_request(clock_label, 240, 100);
+  gtk_widget_set_margin_end(startbtn, 20);
+  gtk_widget_set_margin_end(tmin.btn, 8);
+  gtk_widget_set_margin_end(sunshinetb, 20);
+  gtk_widget_set_margin_end(darktb, 20);
+  gtk_widget_set_margin_end(lightb, 20);
+  gtk_widget_set_margin_end(fmin.btn, 20);
+  gtk_widget_set_margin_end(thmin.btn, 20);
+  gtk_widget_set_margin_end(hour.btn, 20);
+  gtk_widget_set_margin_end(themesetter, 8);
+  gtk_widget_set_margin_bottom(startbtn, 8);
+  gtk_widget_set_margin_bottom(tmin.btn, 20);
+  gtk_widget_set_margin_end(fmin.btn, 8);
+  gtk_widget_set_margin_bottom(fmin.btn, 20);
+  gtk_widget_set_margin_bottom(sunshinetb, 8);
+  gtk_widget_set_margin_bottom(darktb, 8);
+  gtk_widget_set_margin_bottom(lightb, 8);
+  gtk_widget_set_margin_bottom(timeinput, 8);
+  gtk_widget_set_margin_end(timeinput, 20);
+  gtk_widget_set_margin_top(timeinput, 20);
+  gtk_widget_set_margin_end(thmin.btn, 8);
+  gtk_widget_set_margin_end(hour.btn, 20);
+  gtk_widget_set_margin_start(radios, 20);
+  gtk_box_pack_end(GTK_BOX(box), clock_label, FALSE, FALSE, 0);
+
   g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
   g_signal_connect(fmin.btn, "clicked", G_CALLBACK(timer), &fmin);
-  g_signal_connect(tmin.btn, "clicked", G_CALLBACK(timer), &fmin);
+  g_signal_connect(tmin.btn, "clicked", G_CALLBACK(timer), &tmin);
+  g_signal_connect(thmin.btn, "clicked", G_CALLBACK(timer), &thmin);
+  g_signal_connect(hour.btn, "clicked", G_CALLBACK(timer), &hour);
+  g_signal_connect(themesetter, "clicked", G_CALLBACK(settheme), &themesetter);
+  g_signal_connect(startbtn, "clicked", G_CALLBACK(starttimer), startbtn);
   ma_engine_init(NULL, &ENGINE);
+  gtk_window_set_default_size(GTK_WINDOW(window), 1300, 650);
 
-  // render
   gtk_widget_show_all(window);
   gtk_main();
 }
