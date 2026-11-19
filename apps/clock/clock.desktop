@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Clock
+Exec=/opt/mosaic/clock/clock
+Path=/opt/mosaic/clock
+Icon=/opt/mosaic/clock/resources/img/clock.png
+

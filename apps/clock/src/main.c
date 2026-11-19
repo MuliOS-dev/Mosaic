@@ -23,11 +23,65 @@ int THEME;
 char *T1 = "src/styles/sunshine.css";
 char *T2 = "src/styles/dark.css";
 char *T3 = "src/styles/light.css";
+char *currtz;
+const char *tzlist[] = {"Europe/Amsterdam",    "Europe/Athens",
+                        "Europe/Belgrade",     "Europe/Berlin",
+                        "Europe/Brussels",     "Europe/Bucharest",
+                        "Europe/Budapest",     "Europe/Copenhagen",
+                        "Europe/Dublin",       "Europe/Helsinki",
+                        "Europe/Istanbul",     "Europe/Kyiv",
+                        "Europe/Lisbon",       "Europe/London",
+                        "Europe/Madrid",       "Europe/Moscow",
+                        "Europe/Oslo",         "Europe/Paris",
+                        "Europe/Prague",       "Europe/Riga",
+                        "Europe/Rome",         "Europe/Sofia",
+                        "Europe/Stockholm",    "Europe/Vienna",
+                        "Europe/Vilnius",      "Europe/Warsaw",
+                        "Europe/Zurich",
+
+                        "Africa/Accra",        "Africa/Addis_Ababa",
+                        "Africa/Cairo",        "Africa/Casablanca",
+                        "Africa/Dakar",        "Africa/Johannesburg",
+                        "Africa/Kampala",      "Africa/Lagos",
+                        "Africa/Nairobi",      "Africa/Tunis",
+
+                        "Asia/Baghdad",        "Asia/Bangkok",
+                        "Asia/Beirut",         "Asia/Colombo",
+                        "Asia/Dhaka",          "Asia/Dubai",
+                        "Asia/Hong_Kong",      "Asia/Jakarta",
+                        "Asia/Jerusalem",      "Asia/Karachi",
+                        "Asia/Kathmandu",      "Asia/Kolkata",
+                        "Asia/Kuala_Lumpur",   "Asia/Manila",
+                        "Asia/Riyadh",         "Asia/Seoul",
+                        "Asia/Shanghai",       "Asia/Singapore",
+                        "Asia/Taipei",         "Asia/Tehran",
+                        "Asia/Tokyo",
+
+                        "Australia/Adelaide",  "Australia/Brisbane",
+                        "Australia/Darwin",    "Australia/Melbourne",
+                        "Australia/Perth",     "Australia/Sydney",
+
+                        "America/Anchorage",   "America/Argentina/Buenos_Aires",
+                        "America/Bogota",      "America/Chicago",
+                        "America/Denver",      "America/Halifax",
+                        "America/Havana",      "America/Lima",
+                        "America/Los_Angeles", "America/Mexico_City",
+                        "America/New_York",    "America/Phoenix",
+                        "America/Santiago",    "America/Sao_Paulo",
+                        "America/St_Johns",    "America/Toronto",
+                        "America/Vancouver",
+
+                        "Pacific/Auckland",    "Pacific/Fiji",
+                        "Pacific/Guam",        "Pacific/Honolulu",
+                        "Pacific/Pago_Pago"};
+// int ctzs = 0;
 GtkCssProvider *CSS;
 GtkWidget *timeinput;
 GtkWidget *sunshinetb;
 GtkWidget *darktb;
 GtkWidget *lightb;
+GtkWidget *window;
+GtkWidget *lcs;
 
 typedef struct {
   GtkWidget *btn;
@@ -103,6 +157,13 @@ int show(char *css) {
   return 0;
 }
 
+void on_timezone_selected(GtkListBox *list_box, GtkListBoxRow *row,
+                          gpointer data) {
+  const gchar *tz =
+      gtk_label_get_text(GTK_LABEL(gtk_bin_get_child(GTK_BIN(row))));
+  setenv("TZ", tz, 1);
+}
+
 int load_theme(int theme) {
   printf("got called with %i\n", theme);
   switch (theme) {
@@ -159,6 +220,18 @@ int load_theme(int theme) {
   return 0;
 }
 
+void load_clock(int clockstate) {
+  switch (clockstate) {
+  case 0:
+    gtk_widget_set_name(clock_label, "round-clock");
+    break;
+  case 1:
+    gtk_widget_set_name(clock_label, "clock_label");
+    break;
+  }
+  gtk_widget_show_all(window);
+}
+
 void settheme(GtkButton *button, gpointer data) {
   FILE *themef = fopen("include/deftheme", "w");
   if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(sunshinetb)) == TRUE) {
@@ -174,10 +247,30 @@ void settheme(GtkButton *button, gpointer data) {
   fclose(themef);
 }
 
-int main(int argc, char **argv) {
+void legacyclockload(GtkSwitch *swic, gpointer data) {
+  gboolean cstate = gtk_switch_get_active(GTK_SWITCH(lcs));
+  FILE *clockf = fopen("include/clockstate", "w");
+  if (cstate == FALSE) {
+    load_clock(0);
+    fputs("0", clockf);
+  } else {
+    load_clock(1);
+    fputs("1", clockf);
+  }
+  fclose(clockf);
+}
 
-  // init
-  FILE *themefile = fopen("include/deftheme", "r+");
+int main(int argc, char **argv) {
+  FILE *clockfile = fopen("include/clockstate", "r");
+  char cbuf[3];
+  if (clockfile == NULL) {
+    perror("failed to load default clock state, falling back.");
+  }
+  size_t nc = fread(cbuf, 1, sizeof(cbuf), clockfile);
+  cbuf[nc] = '\0';
+  int clockstate = atoi(cbuf);
+
+  FILE *themefile = fopen("include/deftheme", "r");
   CSS = gtk_css_provider_new();
   if (themefile == NULL) {
     perror("failed to load default theme, falling back.");
@@ -201,6 +294,20 @@ int main(int argc, char **argv) {
   notify_init("Clock");
   gtk_init(&argc, &argv);
   load_theme(THEME);
+  GtkWidget *tzl = gtk_list_box_new();
+  GtkWidget *scroll = gtk_scrolled_window_new(NULL, NULL);
+  gtk_widget_set_size_request(scroll, 250, 300);
+  gtk_container_add(GTK_CONTAINER(scroll), tzl);
+  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll), GTK_POLICY_NEVER,
+                                 GTK_POLICY_AUTOMATIC);
+  for (gsize i = 0; i < G_N_ELEMENTS(tzlist); i++) {
+    GtkWidget *row = gtk_list_box_row_new();
+    GtkWidget *label = gtk_label_new(tzlist[i]);
+
+    gtk_widget_set_halign(label, GTK_ALIGN_START);
+    gtk_container_add(GTK_CONTAINER(row), label);
+    gtk_container_add(GTK_CONTAINER(tzl), row);
+  }
   Mosaic_BTN fmin;
   fmin.btn = gtk_button_new_with_label("5mins");
   fmin.id = 0;
@@ -223,13 +330,15 @@ int main(int argc, char **argv) {
       GTK_RADIO_BUTTON(sunshinetb), "Dark");
   lightb = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(darktb),
                                                        "Light");
-  GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+  window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+  GtkWidget *legacy = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
   GtkWidget *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
   GtkWidget *startbtn = gtk_button_new_with_label("Start");
   GError *err = NULL;
   GdkPixbuf *icn = gdk_pixbuf_new_from_file("resources/img/clock.png", &err);
   GtkWidget *row = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
   GtkWidget *separator = gtk_separator_new(GTK_ORIENTATION_VERTICAL);
+  lcs = gtk_switch_new();
   gtk_box_pack_start(GTK_BOX(row), fmin.btn, FALSE, FALSE, 0);
   gtk_box_pack_start(GTK_BOX(row), tmin.btn, FALSE, FALSE, 0);
   gtk_box_pack_start(GTK_BOX(row), thmin.btn, FALSE, FALSE, 0);
@@ -241,7 +350,13 @@ int main(int argc, char **argv) {
   GtkWidget *settings = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
   clock_label = gtk_label_new(update());
   gtk_widget_set_name(GTK_WIDGET(window), "mainwin");
-  gtk_widget_set_name(clock_label, "round-clock");
+  if (clockstate == 1) {
+    gtk_switch_set_active(GTK_SWITCH(lcs), TRUE);
+  } else {
+    gtk_switch_set_active(GTK_SWITCH(lcs), FALSE);
+  }
+  load_clock(clockstate);
+  fclose(clockfile);
   GtkWidget *radios = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
   gtk_container_add(GTK_CONTAINER(radios), sunshinetb);
   gtk_container_add(GTK_CONTAINER(radios), darktb);
@@ -256,6 +371,13 @@ int main(int argc, char **argv) {
   gtk_widget_set_valign(box, GTK_ALIGN_FILL);
   g_timeout_add(1000, update_clock, NULL);
   GtkWidget *main_row = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+  gtk_box_pack_start(GTK_BOX(legacy), lcs, FALSE, FALSE, 0);
+  gtk_widget_set_halign(lcs, GTK_ALIGN_START);
+  gtk_widget_set_valign(lcs, GTK_ALIGN_START);
+  gtk_widget_set_size_request(lcs, 120, 40);
+  GtkWidget *lebal = gtk_label_new("Legacy clock");
+  gtk_box_pack_start(GTK_BOX(legacy), lebal, FALSE, FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(settings), legacy, FALSE, FALSE, 0);
   gtk_widget_set_size_request(settings, 220, -1);
   gtk_widget_set_margin_start(settings, 20);
   gtk_widget_set_margin_end(settings, 20);
@@ -269,7 +391,9 @@ int main(int argc, char **argv) {
   gtk_box_pack_end(GTK_BOX(box), row, FALSE, FALSE, 0);
   gtk_box_pack_end(GTK_BOX(box), startrow, FALSE, FALSE, 0);
   gtk_box_pack_end(GTK_BOX(box), timeinput, FALSE, FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(settings), scroll, FALSE, FALSE, 0);
   gtk_window_set_title(GTK_WINDOW(window), "Mosaic Clock");
+  gtk_widget_set_name(scroll, "tzlistcss");
   gtk_widget_set_halign(fmin.btn, GTK_ALIGN_END);
   gtk_widget_set_valign(fmin.btn, GTK_ALIGN_START);
   gtk_widget_set_halign(fiftm.btn, GTK_ALIGN_END);
@@ -335,6 +459,9 @@ int main(int argc, char **argv) {
   g_signal_connect(hour.btn, "clicked", G_CALLBACK(timer), &hour);
   g_signal_connect(themesetter, "clicked", G_CALLBACK(settheme), &themesetter);
   g_signal_connect(startbtn, "clicked", G_CALLBACK(starttimer), startbtn);
+  g_signal_connect(lcs, "notify::active", G_CALLBACK(legacyclockload), &legacy);
+  g_signal_connect(tzl, "row-activated", G_CALLBACK(on_timezone_selected),
+                   NULL);
   ma_engine_init(NULL, &ENGINE);
   gtk_window_set_default_size(GTK_WINDOW(window), 1300, 650);
 

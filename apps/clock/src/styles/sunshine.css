@@ -378,6 +378,11 @@ treeview.view:selected, iconview:selected {
   padding: 0;
 }
 
+#tzlistcss {
+  background-color: @mosaic_control;
+  border: 1px solid @mosaic_border;
+}
+
 popover, popover.background {
   background-color: @popover_bg_color;
   color: @popover_fg_color;

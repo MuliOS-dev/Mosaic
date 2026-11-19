@@ -303,6 +303,10 @@ scale trough {
   padding: 0;
 }
 
+#tzlistcss {
+  background-color: @mosaic_control;
+  border: 1px solid @mosaic_border;
+}
 
 scale highlight, scale fill {
   background-color: @accent_bg_color;
