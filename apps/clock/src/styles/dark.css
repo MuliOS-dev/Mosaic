@@ -223,6 +223,11 @@ row:selected:hover {
   padding: 0;
 }
 
+#tzlistcss {
+  background-color: @mosaic_control;
+  border: 1px solid @mosaic_border;
+}
+
 .sidebar, placessidebar, stacksidebar, .sidebar-pane {
   background-color: @sidebar_bg_color;
   color: @sidebar_fg_color;
